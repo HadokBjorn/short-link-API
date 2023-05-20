@@ -52,8 +52,21 @@ export async function getInfosUser(req, res) {
 			AND users.id=$1 GROUP BY (users.id);`,
 			[Number(id)]
 		);
-		if (userInfo.rowCount === 0) return res.sendStatus(404);
+		if (userInfo.rowCount === 0) return res.status(404).send("Você ainda não possui links");
 		res.status(200).send(userInfo.rows[0]);
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
+}
+
+export async function getRanking(req, res) {
+	try {
+		const ranking = await db.query(
+			`SELECT users.id, users.name, COUNT(links) AS "linksCount", SUM(links.visits) AS "visitCount"
+			FROM users JOIN links ON links."userId"=users.id GROUP BY (users.id) LIMIT 10;`
+		);
+		if (ranking.rowCount === 0) return res.sendStatus(404);
+		res.status(200).send(ranking.rows);
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
