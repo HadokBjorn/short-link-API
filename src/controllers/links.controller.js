@@ -16,7 +16,7 @@ export async function createShortUrl(req, res) {
 			shortUrl,
 		]);
 
-		res.send(response.rows[0]);
+		res.status(201).send(response.rows[0]);
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
