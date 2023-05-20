@@ -11,3 +11,13 @@ CREATE TABLE users (
     "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
     );
 ```
+
+```
+CREATE TABLE sessions (
+	id SERIAL PRIMARY KEY,
+	"userId" INTEGER NOT NULL REFERENCES users(id),
+	online BOOLEAN NOT NULL DEFAULT TRUE,
+	logout TIMESTAMP,
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+);
+```

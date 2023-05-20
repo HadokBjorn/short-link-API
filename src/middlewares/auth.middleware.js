@@ -6,8 +6,8 @@ export async function authorization(req, res, next) {
 	const { authorization } = req.headers;
 	const token = authorization?.replace("Bearer ", "");
 	if (!token) return res.status(401).send("Token não encontrado!");
-	const userInfo = jwt.verify(token, process.env.JWT_SECRET);
 	try {
+		const userInfo = jwt.verify(token, process.env.JWT_SECRET);
 		const user = await db.query(`SELECT * FROM sessions WHERE "userId"=$1 AND online=true`, [
 			userInfo.id,
 		]);
@@ -16,6 +16,7 @@ export async function authorization(req, res, next) {
 
 		next();
 	} catch (err) {
+		if (err.message === "jwt malformed") return res.status(401).send("Token Inválido");
 		res.status(500).send(err.message);
 	}
 }
