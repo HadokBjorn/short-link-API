@@ -16,10 +16,7 @@ export async function validateLogin(req, res, next) {
 		const { id, name } = user.rows[0];
 		const oneHour = 3600; //seconds
 		const token = jwt.sign({ id, name }, process.env.JWT_SECRET, { expiresIn: oneHour });
-		await db.query(
-			`UPDATE sessions SET online=false, logout=$1 WHERE "userId"=$2 AND online=true;`,
-			[dayjs().format("YYYY-MM-DD HH:mm:ss.ssssss"), Number(id)]
-		);
+		await db.query(`DELETE FROM sessions WHERE "userId"=$1 AND token !=$2 ;`, [Number(id), token]);
 
 		res.locals.infos = { id, token };
 

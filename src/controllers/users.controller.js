@@ -21,7 +21,7 @@ export async function signup(req, res) {
 export async function login(req, res) {
 	try {
 		const { id, token } = res.locals.infos;
-		await db.query(`INSERT INTO sessions ("userId") VALUES ($1)`, [id]);
+		await db.query(`INSERT INTO sessions ("userId", token) VALUES ($1,$2)`, [id, token]);
 		res.status(200).send({ token: token });
 	} catch (err) {
 		res.status(500).send(err.message);
@@ -31,10 +31,7 @@ export async function login(req, res) {
 export async function logout(req, res) {
 	const { id } = res.locals.user;
 	try {
-		await db.query(
-			`UPDATE sessions SET online=false, logout=$1 WHERE "userId"=$2 AND online=true;`,
-			[dayjs().format("YYYY-MM-DD HH:mm:ss.ssssss"), Number(id)]
-		);
+		await db.query(`DELETE FROM sessions WHERE "userId"=$1;`, [Number(id)]);
 		res.send("Usuário desconectado");
 	} catch (err) {
 		res.status(500).send(err.message);

@@ -8,8 +8,9 @@ export async function authorization(req, res, next) {
 	if (!token) return res.status(401).send("Token não encontrado!");
 	try {
 		const userInfo = jwt.verify(token, process.env.JWT_SECRET);
-		const user = await db.query(`SELECT * FROM sessions WHERE "userId"=$1 AND online=true`, [
+		const user = await db.query(`SELECT * FROM sessions WHERE "userId"=$1 AND token=$2`, [
 			userInfo.id,
+			token,
 		]);
 		if (user.rowCount === 0) return res.status(401).send("Token expirado ou inválido");
 		res.locals.user = userInfo;
