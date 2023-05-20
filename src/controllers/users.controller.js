@@ -40,3 +40,21 @@ export async function logout(req, res) {
 		res.status(500).send(err.message);
 	}
 }
+
+export async function getInfosUser(req, res) {
+	const { id } = res.locals.user;
+	try {
+		const userInfo = await db.query(
+			`SELECT users.id, users.name, SUM(links.visits) AS "visitCount",
+			json_agg(json_build_object('id',links.id, 'url', links.url, 'shortUrl',links."shortUrl",'visitCount',links.visits))
+			AS "shortenedUrls"
+			FROM users JOIN links ON links."userId"=$1
+			AND users.id=$1 GROUP BY (users.id);`,
+			[Number(id)]
+		);
+		if (userInfo.rowCount === 0) return res.sendStatus(404);
+		res.status(200).send(userInfo.rows[0]);
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
+}
