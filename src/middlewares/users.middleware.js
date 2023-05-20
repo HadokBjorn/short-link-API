@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { db } from "../database/database.connections.js";
+import dayjs from "dayjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
@@ -13,10 +14,22 @@ export async function validateLogin(req, res, next) {
 		const correctPassword = bcrypt.compareSync(password, user.rows[0].password);
 		if (!correctPassword) return res.sendStatus(401);
 		const { id, name } = user.rows[0];
-		const token = jwt.sign({ id, name }, process.env.JWT_SECRET);
+		const oneHour = 3600; //seconds
+		const token = jwt.sign({ id, name }, process.env.JWT_SECRET, { expiresIn: oneHour });
+		await db.query(
+			`UPDATE sessions SET online=false, logout=$1 WHERE "userId"=$2 AND online=true;`,
+			[dayjs().format("YYYY-MM-DD HH:mm:ss.ssssss"), Number(id)]
+		);
+
 		res.locals.infos = { id, token };
+
 		next();
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
 }
+/* 
+Na hora do login setar a sessão anterior do usuário como: online = false;
+registrar o token com validade de 1 hora;
+fazer função de logout;
+*/

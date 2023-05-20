@@ -17,6 +17,7 @@ export async function authorization(req, res, next) {
 		next();
 	} catch (err) {
 		if (err.message === "jwt malformed") return res.status(401).send("Token Inválido");
+		if (err.message === "jwt expired") return res.status(401).send("Token Expirado");
 		res.status(500).send(err.message);
 	}
 }
