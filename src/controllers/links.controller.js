@@ -51,3 +51,22 @@ export async function openUrl(req, res) {
 		res.status(500).send(err.message);
 	}
 }
+
+export async function deleteUrlById(req, res) {
+	const { id } = req.params;
+	const userId = res.locals.user.id;
+	try {
+		const itemToDelete = await db.query(`SELECT "userId" FROM links WHERE id=$1;`, [id]);
+		if (itemToDelete.rowCount === 0) return res.sendStatus(404);
+
+		const deleted = await db.query(`DELETE FROM links WHERE id=$1 AND "userId"=$2;`, [
+			Number(id),
+			Number(userId),
+		]);
+		if (deleted.rowCount === 0) return res.sendStatus(401);
+
+		res.sendStatus(204);
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
+}
