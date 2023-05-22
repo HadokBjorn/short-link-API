@@ -28,5 +28,6 @@ CREATE TABLE links (
 	"shortUrl" TEXT NOT NULL,
 	url TEXT NOT NULL,
 	visits INTEGER NOT NULL DEFAULT 0
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
