@@ -43,7 +43,6 @@ export async function getInfosUser(req, res) {
 	const { id } = res.locals.user;
 	try {
 		const userInfo = await userLinksInfoDB(id);
-		if (userInfo.rowCount === 0) return res.status(404).send("Você ainda não possui links");
 		res.status(200).send(userInfo.rows[0]);
 	} catch (err) {
 		res.status(500).send(err.message);
