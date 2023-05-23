@@ -41,7 +41,9 @@ export async function openUrl(req, res) {
 		const { id, url, visits } = response.rows[0];
 		let visit = visits;
 		await urlIncrementVisitsDB({ visit, id });
-		res.redirect(url);
+		//res.redirect(url);
+		window.location.href = url;
+		res.sendStatus(200);
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
