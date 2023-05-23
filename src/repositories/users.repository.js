@@ -27,6 +27,6 @@ export function userLinksInfoDB(id) {
 export function usersRankingDB() {
 	return db.query(
 		`SELECT users.id, users.name, COUNT(links) AS "linksCount", SUM(links.visits) AS "visitCount"
-        FROM users JOIN links ON links."userId"=users.id GROUP BY (users.id) LIMIT 10;`
+        FROM users JOIN links ON links."userId"=users.id GROUP BY (users.id) ORDER BY "visitCount" DESC LIMIT 10;`
 	);
 }
