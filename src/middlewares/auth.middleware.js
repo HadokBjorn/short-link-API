@@ -7,7 +7,7 @@ export async function authorization(req, res, next) {
 	const token = authorization?.replace("Bearer ", "");
 	if (!token) return res.status(401).send("Token não encontrado!");
 	try {
-		const userInfo = jwt.verify(token, "Minha_Chave");
+		const userInfo = jwt.verify(token, process.env.JWT_SECRET);
 		const user = await db.query(`SELECT * FROM sessions WHERE "userId"=$1 AND token=$2`, [
 			userInfo.id,
 			token,
