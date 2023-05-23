@@ -16,8 +16,7 @@ export function urlByIdDB(id) {
 export function urlWithVisitsDB(shortUrl) {
 	return db.query(`SELECT id, url, visits FROM links WHERE "shortUrl"=$1;`, [shortUrl]);
 }
-export function urlIncrementVisitsDB(body) {
-	const { visit, id } = body;
+export function urlIncrementVisitsDB(visit, id) {
 	return db.query(`UPDATE links SET visits=$1 WHERE id=$2`, [(visit += 1), id]);
 }
 export function deleteLinkDB(body) {

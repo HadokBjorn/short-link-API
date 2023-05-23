@@ -40,10 +40,8 @@ export async function openUrl(req, res) {
 		if (response.rowCount === 0) return res.sendStatus(404);
 		const { id, url, visits } = response.rows[0];
 		let visit = visits;
-		await urlIncrementVisitsDB({ visit, id });
-		//res.redirect(url);
-		window.location.href = url;
-		res.sendStatus(200);
+		await urlIncrementVisitsDB(visit, id);
+		res.redirect(url);
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
