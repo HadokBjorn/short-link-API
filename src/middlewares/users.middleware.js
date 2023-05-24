@@ -17,7 +17,7 @@ export async function validateLogin(req, res, next) {
 		const token = jwt.sign({ id, name }, process.env.JWT_SECRET, { expiresIn: oneHour });
 		await db.query(`DELETE FROM sessions WHERE "userId"=$1 AND token !=$2 ;`, [Number(id), token]);
 
-		res.locals.infos = { id, token };
+		res.locals.infos = { id, token, name };
 
 		next();
 	} catch (err) {

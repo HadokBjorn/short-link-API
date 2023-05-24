@@ -21,9 +21,9 @@ export async function signup(req, res) {
 
 export async function login(req, res) {
 	try {
-		const { id, token } = res.locals.infos;
+		const { id, token, name } = res.locals.infos;
 		await createSessionDB({ id, token });
-		res.status(200).send({ token: token });
+		res.status(200).send({ token: token, name: name });
 	} catch (err) {
 		res.status(500).send(err.message);
 	}
