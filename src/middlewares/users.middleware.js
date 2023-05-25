@@ -24,8 +24,3 @@ export async function validateLogin(req, res, next) {
 		res.status(500).send(err.message);
 	}
 }
-/* 
-Na hora do login setar a sessão anterior do usuário como: online = false;
-registrar o token com validade de 1 hora;
-fazer função de logout;
-*/
