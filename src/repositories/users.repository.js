@@ -1,4 +1,5 @@
 import { db } from "../database/database.connections.js";
+
 export function createUserDB(body) {
 	const { name, email, hash } = body;
 	return db.query(`INSERT INTO users (name, email, password) VALUES ($1,$2,$3)`, [
@@ -13,6 +14,9 @@ export function createSessionDB(body) {
 }
 export function deleteSessionDB(id) {
 	return db.query(`DELETE FROM sessions WHERE "userId"=$1;`, [Number(id)]);
+}
+export function deleteSessionByTokenDB(id, token) {
+	return db.query(`DELETE FROM sessions WHERE "userId"=$1 AND token !=$2 ;`, [Number(id), token]);
 }
 export function userLinksInfoDB(id) {
 	return db.query(
@@ -29,4 +33,10 @@ export function usersRankingDB() {
 		`SELECT users.id, users.name, COUNT(links) AS "linksCount", SUM(links.visits) AS "visitCount"
         FROM users JOIN links ON links."userId"=users.id GROUP BY (users.id) ORDER BY "visitCount" DESC LIMIT 10;`
 	);
+}
+export function userByEmailDB(email) {
+	return db.query(`SELECT * FROM users WHERE email=$1;`, [email]);
+}
+export function userSignedDB(id, token) {
+	return db.query(`SELECT * FROM sessions WHERE "userId"=$1 AND token=$2`, [id, token]);
 }
